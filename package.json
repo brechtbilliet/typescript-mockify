@@ -1,0 +1,42 @@
+{
+  "name": "typescript-mockify",
+  "version": "1.0.0",
+  "description": "A library to automate mocking in typescript",
+  "main": "src/index.ts",
+  "scripts": {
+    "preinstall": "npm install autodts",
+    "postinstall": "autodts link",
+    "prepublish": "tsd install && webpack"
+  },
+  "typescript": {
+    "definition": "index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brechtbilliet/typescript-mockify.git"
+  },
+  "keywords": [
+    "typescript",
+    "mocking"
+  ],
+  "author": "Brecht Billiet <billietbrecht@gmail.com> (http://brecht.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brechtbilliet/typescript-mockify/issues"
+  },
+  "homepage": "https://github.com/brechtbilliet/typescript-mockify#readme",
+  "devDependencies": {
+    "autodts": "0.0.5",
+    "babel": "5.8.23",
+    "fs": "0.0.2",
+    "jasmine": "2.3.2",
+    "ts-loader": "0.5.5",
+    "tsd": "0.6.4",
+    "typescript": "1.6.2",
+    "wallaby-webpack": "0.0.8",
+    "webpack": "1.12.2"
+  },
+  "dependencies": {
+    "lodash": "3.10.1"
+  }
+}
