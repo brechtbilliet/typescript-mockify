@@ -1,10 +1,12 @@
 {
   "name": "typescript-mockify",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A library to automate mocking in typescript",
   "main": "prod/typescript-mockify.js",
   "scripts": {
-    "prepublish": "tsd install && webpack --config webpack.js"
+    "prebuild": "tsd install && rm -rf dist && mkdir dist",
+    "build": "tsc",
+    "prepublish": "build"
   },
   "repository": {
     "type": "git",
