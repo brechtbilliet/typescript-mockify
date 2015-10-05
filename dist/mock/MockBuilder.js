@@ -1,9 +1,12 @@
-import { Mock } from "./Mock";
-import * as _ from "lodash";
-export class MockBuilder {
-    static createInstance(ctor, args) {
-        var instance = (() => {
-            var ConstructFunc = () => {
+var Mock_1 = require("./Mock");
+var _ = require("lodash");
+var MockBuilder = (function () {
+    function MockBuilder() {
+    }
+    MockBuilder.createInstance = function (ctor, args) {
+        var _this = this;
+        var instance = (function () {
+            var ConstructFunc = function () {
             };
             ConstructFunc.prototype = ctor.prototype;
             for (var i in ConstructFunc.prototype) {
@@ -11,12 +14,12 @@ export class MockBuilder {
             }
             var inst = new ConstructFunc();
             ctor.apply(inst, _.toArray(args.arguments));
-            this.setDefaultVals(inst, args);
+            _this.setDefaultVals(inst, args);
             return inst;
         })();
-        return new Mock(instance, args);
-    }
-    static setDefaultVals(object, args) {
+        return new Mock_1.Mock(instance, args);
+    };
+    MockBuilder.setDefaultVals = function (object, args) {
         for (var key in object) {
             if (!_.isFunction() && typeof (object[key]) !== "function") {
                 if (args === null || !args.arguments.hasOwnProperty(key)) {
@@ -27,8 +30,8 @@ export class MockBuilder {
                 }
             }
         }
-    }
-    static createDefaultValue(type) {
+    };
+    MockBuilder.createDefaultValue = function (type) {
         switch (type) {
             case "string":
                 return "";
@@ -41,5 +44,7 @@ export class MockBuilder {
             default:
                 return undefined;
         }
-    }
-}
+    };
+    return MockBuilder;
+})();
+exports.MockBuilder = MockBuilder;

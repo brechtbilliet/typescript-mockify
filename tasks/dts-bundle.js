@@ -1,6 +1,7 @@
-var dts = require('dts-bundle');
-dts.bundle({
+var dts = require('dts-generator');
+dts.generate({
     name: 'typescript-mockify',
-    main: 'dist/index.d.ts',
-    out: '../dist/typescript-mockify.d.ts'
+    baseDir: 'src',
+    files: ['index.ts', 'mock/ConstructorArguments.ts', 'mock/IConstructor.ts', 'mock/Mock.ts', 'mock/MockBuilder.ts', 'mock/StubbedFunc.ts'],
+    out: 'dist/typescript-mockify.d.ts'
 });

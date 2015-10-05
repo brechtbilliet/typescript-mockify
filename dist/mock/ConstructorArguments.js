@@ -1,9 +1,11 @@
-export class ConstructorArguments {
-    constructor() {
+var ConstructorArguments = (function () {
+    function ConstructorArguments() {
         this.arguments = {};
     }
-    map(key, value) {
+    ConstructorArguments.prototype.map = function (key, value) {
         this.arguments[key] = value;
         return this;
-    }
-}
+    };
+    return ConstructorArguments;
+})();
+exports.ConstructorArguments = ConstructorArguments;
