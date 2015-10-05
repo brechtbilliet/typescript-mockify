@@ -35,7 +35,9 @@
     "jasmine": "2.3.2",
     "ts-loader": "0.5.5",
     "tsd": "0.6.4",
+    "tsproject": "1.0.0",
     "typescript": "1.6.2",
+    "typescript-compiler": "1.4.1",
     "wallaby-webpack": "0.0.8",
     "webpack": "1.12.2"
   },

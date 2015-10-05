@@ -5,5 +5,6 @@ dts.generate({
     files: [
         'index.ts'
     ],
-    out: 'dist/typescript-mockify.d.ts'
+    out: 'dist/typescript-mockify.d.ts',
+    main: "typescript-mockify"
 });

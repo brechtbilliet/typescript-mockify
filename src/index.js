@@ -1,0 +1,9 @@
+/// <reference path="../typings/tsd.d.ts" />
+var MockBuilder_1 = require("./mock/MockBuilder");
+exports.MockBuilder = MockBuilder_1.MockBuilder;
+var Mock_1 = require("./mock/Mock");
+exports.Mock = Mock_1.Mock;
+var StubbedFunc_1 = require("./mock/StubbedFunc");
+exports.StubbedFunc = StubbedFunc_1.StubbedFunc;
+var ConstructorArguments_1 = require("./mock/ConstructorArguments");
+exports.ConstructorArguments = ConstructorArguments_1.ConstructorArguments;

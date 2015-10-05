@@ -1,9 +1,9 @@
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 /// <reference path="../typings/tsd.d.ts" />
-var MockBuilder_1 = require("./mock/MockBuilder");
-exports.MockBuilder = MockBuilder_1.MockBuilder;
-var Mock_1 = require("./mock/Mock");
-exports.Mock = Mock_1.Mock;
-var StubbedFunc_1 = require("./mock/StubbedFunc");
-exports.StubbedFunc = StubbedFunc_1.StubbedFunc;
-var ConstructorArguments_1 = require("./mock/ConstructorArguments");
-exports.ConstructorArguments = ConstructorArguments_1.ConstructorArguments;
+__export(require("./mock/MockBuilder"));
+__export(require("./mock/Mock"));
+__export(require("./mock/StubbedFunc"));
+__export(require("./mock/IConstructor"));
+__export(require("./mock/ConstructorArguments"));

@@ -49,10 +49,14 @@ declare module 'typescript-mockify/mock/MockBuilder' {
 }
 declare module 'typescript-mockify/index' {
 	/// <reference path="../typings/tsd.d.ts" />
-	export { MockBuilder } from 'typescript-mockify/mock/MockBuilder';
-	export { Mock } from 'typescript-mockify/mock/Mock';
-	export { StubbedFunc } from 'typescript-mockify/mock/StubbedFunc';
-	export { IConstructor } from 'typescript-mockify/mock/IConstructor';
-	export { ConstructorArguments } from 'typescript-mockify/mock/ConstructorArguments';
+	export * from 'typescript-mockify/mock/MockBuilder';
+	export * from 'typescript-mockify/mock/Mock';
+	export * from 'typescript-mockify/mock/StubbedFunc';
+	export * from 'typescript-mockify/mock/IConstructor';
+	export * from 'typescript-mockify/mock/ConstructorArguments';
 
+}
+declare module 'typescript-mockify' {
+	import main = require('typescript-mockify');
+	export = main;
 }
