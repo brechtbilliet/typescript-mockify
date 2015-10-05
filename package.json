@@ -1,12 +1,16 @@
 {
   "name": "typescript-mockify",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "A library to automate mocking in typescript",
-  "main": "prod/typescript-mockify.js",
+  "main": "dist/index.js",
   "scripts": {
+    "dts-bundle": "node tasks/dts-bundle",
     "prebuild": "tsd install && rm -rf dist && mkdir dist",
     "build": "tsc",
-    "prepublish": "npm run build"
+    "postbuild": "npm run dts-bundle"
+  },
+  "typescript": {
+    "definition": "dist/typescript-mockify.d.ts"
   },
   "repository": {
     "type": "git",
@@ -30,7 +34,8 @@
     "tsd": "0.6.4",
     "typescript": "1.6.2",
     "wallaby-webpack": "0.0.8",
-    "webpack": "1.12.2"
+    "webpack": "1.12.2",
+    "dts-bundle": "^0.3.0"
   },
   "dependencies": {
     "lodash": "3.10.1"
