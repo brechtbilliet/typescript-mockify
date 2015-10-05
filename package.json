@@ -1,6 +1,6 @@
 {
   "name": "typescript-mockify",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "A library to automate mocking in typescript",
   "main": "dist/index.js",
   "scripts": {
@@ -8,8 +8,7 @@
     "prebuild": "tsd install && rm -rf dist && mkdir dist",
     "build": "tsc",
     "postbuild": "npm run dts-bundle",
-    "prepublish": "npm run build",
-    "postinstall": "cp node_modules/typescript-mockify/dist/typescript-mockify.d.ts ../../../typings/typescript-mockify.d.ts"
+    "prepublish": "npm run build"
   },
   "typescript": {
     "definition": "dist/typescript-mockify.d.ts"

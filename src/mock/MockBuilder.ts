@@ -4,7 +4,7 @@ import {ConstructorArguments} from "./ConstructorArguments";
 import {IConstructor} from "./IConstructor";
 
 export class MockBuilder {
-    public static createInstance<T>(ctor: IConstructor<T>, args?: ConstructorArguments): Mock<T> {
+    public static createInstance<T>(ctor: T, args?: ConstructorArguments): Mock<T> {
         var instance: T = (() => {
             var ConstructFunc: any = () => {
             };
