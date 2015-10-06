@@ -76,8 +76,6 @@ Or just use it directly...
 var driveSpy: Spy = mockedCar.instance.drive;
 ```
 
-_Did you notice you can use **///&lt;reference />** tags?_
-
 ## Example
 
 Just a tiny example to show the difference between the real instance and the mock instance
