@@ -1,6 +1,6 @@
 {
   "name": "typescript-mockify",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "A library to automate mocking in typescript",
   "main": "dist/index.js",
   "scripts": {
@@ -34,7 +34,6 @@
     "dts-generator": "^1.5.0",
     "fs": "0.0.2",
     "jasmine": "2.3.2",
-    "safe-mkdir": "^1.0.3",
     "ts-loader": "0.5.5",
     "tsd": "0.6.4",
     "typescript": "1.6.2",
@@ -42,6 +41,7 @@
     "webpack": "1.12.2"
   },
   "dependencies": {
+    "safe-mkdir": "^1.0.3",
     "lodash": "3.10.1"
   }
 }
