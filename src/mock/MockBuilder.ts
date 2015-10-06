@@ -14,7 +14,11 @@ export class MockBuilder {
             }
             var inst: any = new ConstructFunc();
 
-            ctor.apply(inst, _.toArray(args.arguments));
+            if (args) {
+                ctor.apply(inst, _.toArray(args.arguments));
+            } else {
+                ctor.apply(inst, []);
+            }
             this.setDefaultVals(inst, args);
             return inst;
         })();
@@ -24,7 +28,7 @@ export class MockBuilder {
     private static setDefaultVals(object: Object, args?: ConstructorArguments): void {
         for (var key in object) {
             if (!_.isFunction() && typeof(object[key]) !== "function") {
-                if (args  === null || !args.arguments.hasOwnProperty(key)) {
+                if (args === undefined || (args !== undefined && !args.arguments.hasOwnProperty(key))) {
                     var defaultVal: any = this.createDefaultValue(typeof(object[key]));
                     if (defaultVal !== undefined) {
                         object[key] = defaultVal;

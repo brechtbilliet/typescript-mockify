@@ -13,7 +13,12 @@ var MockBuilder = (function () {
                 ConstructFunc.prototype[i] = jasmine.createSpy(ConstructFunc.prototype[i]);
             }
             var inst = new ConstructFunc();
-            ctor.apply(inst, _.toArray(args.arguments));
+            if (args) {
+                ctor.apply(inst, _.toArray(args.arguments));
+            }
+            else {
+                ctor.apply(inst, []);
+            }
             _this.setDefaultVals(inst, args);
             return inst;
         })();
@@ -22,7 +27,7 @@ var MockBuilder = (function () {
     MockBuilder.setDefaultVals = function (object, args) {
         for (var key in object) {
             if (!_.isFunction() && typeof (object[key]) !== "function") {
-                if (args === null || !args.arguments.hasOwnProperty(key)) {
+                if (args === undefined || (args !== undefined && !args.arguments.hasOwnProperty(key))) {
                     var defaultVal = this.createDefaultValue(typeof (object[key]));
                     if (defaultVal !== undefined) {
                         object[key] = defaultVal;

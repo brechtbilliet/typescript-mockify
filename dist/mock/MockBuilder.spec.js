@@ -56,9 +56,27 @@ var Baz = (function (_super) {
     };
     return Baz;
 })(BazParent);
+var NoConstructor = (function () {
+    function NoConstructor() {
+        this.stringVal = "dummystrval";
+        this.booleanVal = true;
+        this.numberVal = 0;
+        this.objectVal = {};
+    }
+    NoConstructor.prototype.foo = function () {
+    };
+    NoConstructor.prototype.bar = function () {
+        return "dummystr";
+    };
+    NoConstructor.prototype.baz = function () {
+        return 10;
+    };
+    return NoConstructor;
+})();
 describe("MockBuilder", function () {
     var mock;
     var inheritedMock;
+    var mockWithoutArguments;
     var constructorArguments;
     beforeEach(function () {
         constructorArguments = new ConstructorArguments_1.ConstructorArguments()
@@ -67,6 +85,7 @@ describe("MockBuilder", function () {
             .map("barVal", new Bar());
         mock = MockBuilder_1.MockBuilder.createInstance(Foo, constructorArguments);
         inheritedMock = MockBuilder_1.MockBuilder.createInstance(Baz, constructorArguments);
+        mockWithoutArguments = MockBuilder_1.MockBuilder.createInstance(NoConstructor);
     });
     describe("for normal objects", function () {
         describe("on createIntance(), the mocked object", function () {
@@ -217,6 +236,82 @@ describe("MockBuilder", function () {
             describe("on getSpy()", function () {
                 it("should return the spy of the method", function () {
                     var spy = inheritedMock
+                        .setupMethod("bar")
+                        .getSpy();
+                    expect(spy.and).toBeDefined();
+                });
+            });
+        });
+    });
+    describe("for objects without constructor options", function () {
+        describe("on createIntance(), the mocked object", function () {
+            it("should return a mock object", function () {
+                expect(mockWithoutArguments.hasOwnProperty("instance")).toBe(true);
+                expect(mockWithoutArguments.hasOwnProperty("instance")).toBe(true);
+            });
+            it("should have all the functions defined", function () {
+                expect(mockWithoutArguments.instance.foo).toBeDefined();
+                expect(mockWithoutArguments.instance.bar).toBeDefined();
+                expect(mockWithoutArguments.instance.baz).toBeDefined();
+            });
+            it("should have created spies for every function", function () {
+                expect(mockWithoutArguments.instance.foo.and).toBeDefined();
+                expect(mockWithoutArguments.instance.bar.and).toBeDefined();
+                expect(mockWithoutArguments.instance.baz.and).toBeDefined();
+            });
+            it("should have all the properties defined", function () {
+                expect(mockWithoutArguments.instance.hasOwnProperty("stringVal")).toBe(true);
+                expect(mockWithoutArguments.instance.hasOwnProperty("booleanVal")).toBe(true);
+                expect(mockWithoutArguments.instance.hasOwnProperty("numberVal")).toBe(true);
+                expect(mockWithoutArguments.instance.hasOwnProperty("objectVal")).toBe(true);
+            });
+            it("should have reset all the properties with default values", function () {
+                expect(mockWithoutArguments.instance.stringVal).toEqual("");
+                expect(mockWithoutArguments.instance.booleanVal).toEqual(false);
+                expect(mockWithoutArguments.instance.numberVal).toEqual(0);
+                expect(mockWithoutArguments.instance.objectVal).toEqual({});
+            });
+        });
+        describe("on mapProperty() on the mock object", function () {
+            it("should return the mock object", function () {
+                var returnVal = mockWithoutArguments.mapProperty("numberVal", 100);
+                expect(returnVal.hasOwnProperty("instance")).toBe(true);
+            });
+            it("should map the property on the stubbed object", function () {
+                var barVal = new Bar();
+                mockWithoutArguments.mapProperty("numberVal", 100)
+                    .mapProperty("booleanVal", true)
+                    .mapProperty("stringVal", "dummystr")
+                    .mapProperty("barVal", barVal);
+                expect(mockWithoutArguments.instance.numberVal).toBe(100);
+                expect(mockWithoutArguments.instance.booleanVal).toBe(true);
+                expect(mockWithoutArguments.instance.stringVal).toBe("dummystr");
+            });
+        });
+        describe("on setupMethod() on the mock object", function () {
+            it("should return a stubbedFunc method for that method", function () {
+                expect(mockWithoutArguments.setupMethod("bar").andReturn).toBeDefined();
+            });
+            describe("on andReturn() on the stubbedFunc method", function () {
+                it("should cast the function to a spy and map the passed return value on it", function () {
+                    mockWithoutArguments.setupMethod("bar")
+                        .andReturn("dummyValue")
+                        .setupMethod("baz")
+                        .andReturn(100);
+                    expect(mockWithoutArguments.instance.bar()).toBe("dummyValue");
+                    expect(mockWithoutArguments.instance.baz()).toBe(100);
+                });
+                it("should return the mock object", function () {
+                    var returnObj = mockWithoutArguments.setupMethod("bar")
+                        .andReturn("dummyValue")
+                        .setupMethod("baz")
+                        .andReturn(100);
+                    expect(returnObj.hasOwnProperty("instance")).toBe(true);
+                });
+            });
+            describe("on getSpy()", function () {
+                it("should return the spy of the method", function () {
+                    var spy = mockWithoutArguments
                         .setupMethod("bar")
                         .getSpy();
                     expect(spy.and).toBeDefined();
