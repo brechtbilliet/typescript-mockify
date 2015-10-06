@@ -57,6 +57,6 @@ declare module 'typescript-mockify/index' {
 
 }
 declare module 'typescript-mockify' {
-	import main = require('typescript-mockify');
+	import main = require('typescript-mockify/index');
 	export = main;
 }

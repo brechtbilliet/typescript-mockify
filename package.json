@@ -1,6 +1,6 @@
 {
   "name": "typescript-mockify",
-  "version": "1.0.15",
+  "version": "1.0.19",
   "description": "A library to automate mocking in typescript",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "tsc",
     "postbuild": "npm run dts-bundle",
     "prepublish": "npm run build",
-    "prestart": "cp node_modules/typescript-mockify/dist/typescript-mockify.d.ts ../../../typings/typescript-mockify.d.ts"
+    "postinstall": "mkdir ../../typings && cp dist/typescript-mockify.d.ts ../../typings/typescript-mockify.d.ts"
   },
   "typescript": {
     "definition": "dist/typescript-mockify.d.ts"
@@ -30,14 +30,13 @@
   "homepage": "https://github.com/brechtbilliet/typescript-mockify#readme",
   "devDependencies": {
     "babel": "5.8.23",
+    "dts-bundle": "^0.3.0",
     "dts-generator": "^1.5.0",
     "fs": "0.0.2",
     "jasmine": "2.3.2",
     "ts-loader": "0.5.5",
     "tsd": "0.6.4",
-    "tsproject": "1.0.0",
     "typescript": "1.6.2",
-    "typescript-compiler": "1.4.1",
     "wallaby-webpack": "0.0.8",
     "webpack": "1.12.2"
   },
