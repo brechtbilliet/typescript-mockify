@@ -3,6 +3,7 @@ import {MockBuilder} from "./MockBuilder";
 import {Mock} from "./Mock";
 import Spy = jasmine.Spy;
 import {ConstructorArguments} from "./ConstructorArguments";
+import {IConstructor} from "./IConstructor";
 
 interface IFoo {
     stringVal: string;
@@ -117,10 +118,10 @@ describe("MockBuilder", () => {
         constructorArguments = new ConstructorArguments()
             .map("stringVal", "just a str")
             .map("booleanVal", true)
-            .map("barVal", new Bar())
-        mock = MockBuilder.createInstance<IFoo>(Foo, constructorArguments);
-        inheritedMock = MockBuilder.createInstance<IFoo>(Baz, constructorArguments);
-        mockWithoutArguments = MockBuilder.createInstance<INoConstructor>(NoConstructor);
+            .map("barVal", new Bar());
+        mock = MockBuilder.createInstance<IFoo>(<IConstructor<Foo>>Foo, constructorArguments);
+        inheritedMock = MockBuilder.createInstance<IFoo>(<IConstructor<Baz>>Baz, constructorArguments);
+        mockWithoutArguments = MockBuilder.createInstance<INoConstructor>(<IConstructor<NoConstructor>>NoConstructor);
     });
 
     describe("for normal objects", () => {
@@ -191,7 +192,7 @@ describe("MockBuilder", () => {
                         .andReturn(100);
                     expect(returnObj.hasOwnProperty("instance")).toBe(true);
                 });
-            })
+            });
             describe("on getSpy()", () => {
                 it("should return the spy of the method", () => {
                     var spy: Spy = mock
@@ -270,7 +271,7 @@ describe("MockBuilder", () => {
                         .andReturn(100);
                     expect(returnObj.hasOwnProperty("instance")).toBe(true);
                 });
-            })
+            });
             describe("on getSpy()", () => {
                 it("should return the spy of the method", () => {
                     var spy: Spy = inheritedMock
@@ -347,7 +348,7 @@ describe("MockBuilder", () => {
                         .andReturn(100);
                     expect(returnObj.hasOwnProperty("instance")).toBe(true);
                 });
-            })
+            });
             describe("on getSpy()", () => {
                 it("should return the spy of the method", () => {
                     var spy: Spy = mockWithoutArguments
