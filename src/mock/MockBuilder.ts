@@ -8,7 +8,9 @@ export class MockBuilder {
         var instance: T = (() => {
             var ConstructFunc: any = () => {
             };
-            ConstructFunc.prototype = ctor.prototype;
+            ConstructFunc.prototype = Object.create(ctor.prototype);
+            ConstructFunc.prototype.constructor = ConstructFunc;
+
             for (var i in ConstructFunc.prototype) {
                 ConstructFunc.prototype[i] = jasmine.createSpy(ConstructFunc.prototype[i]);
             }
@@ -19,7 +21,7 @@ export class MockBuilder {
             } else {
                 ctor.apply(inst, []);
             }
-            this.setDefaultVals(inst, args);
+            MockBuilder.setDefaultVals(inst, args);
             return inst;
         })();
         return new Mock<T>(instance, args);

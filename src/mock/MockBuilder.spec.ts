@@ -4,6 +4,8 @@ import {Mock} from "./Mock";
 import Spy = jasmine.Spy;
 import {ConstructorArguments} from "./ConstructorArguments";
 import {IConstructor} from "./IConstructor";
+import {MockBuilder} from "./MockBuilder";
+import INoConstructor from "./";
 
 interface IFoo {
     stringVal: string;
@@ -187,9 +189,9 @@ describe("MockBuilder", () => {
                 });
                 it("should return the mock object", () => {
                     var returnObj: any = mock.setupMethod("bar")
-                        .andReturn("dummyValue")
-                        .setupMethod("baz")
-                        .andReturn(100);
+                                             .andReturn("dummyValue")
+                                             .setupMethod("baz")
+                                             .andReturn(100);
                     expect(returnObj.hasOwnProperty("instance")).toBe(true);
                 });
             });
@@ -242,9 +244,9 @@ describe("MockBuilder", () => {
             it("should map the property on the stubbed object", () => {
                 var barVal: IBar = new Bar();
                 inheritedMock.mapProperty("numberVal", 100)
-                    .mapProperty("booleanVal", true)
-                    .mapProperty("stringVal", "dummystr")
-                    .mapProperty("barVal", barVal);
+                             .mapProperty("booleanVal", true)
+                             .mapProperty("stringVal", "dummystr")
+                             .mapProperty("barVal", barVal);
                 expect(inheritedMock.instance.numberVal).toBe(100);
                 expect(inheritedMock.instance.booleanVal).toBe(true);
                 expect(inheritedMock.instance.stringVal).toBe("dummystr");
@@ -258,17 +260,17 @@ describe("MockBuilder", () => {
             describe("on andReturn() on the stubbedFunc method", () => {
                 it("should cast the function to a spy and map the passed return value on it", () => {
                     inheritedMock.setupMethod("bar")
-                        .andReturn("dummyValue")
-                        .setupMethod("baz")
-                        .andReturn(100);
+                                 .andReturn("dummyValue")
+                                 .setupMethod("baz")
+                                 .andReturn(100);
                     expect(inheritedMock.instance.bar()).toBe("dummyValue");
                     expect(inheritedMock.instance.baz()).toBe(100);
                 });
                 it("should return the mock object", () => {
                     var returnObj: any = inheritedMock.setupMethod("bar")
-                        .andReturn("dummyValue")
-                        .setupMethod("baz")
-                        .andReturn(100);
+                                                      .andReturn("dummyValue")
+                                                      .setupMethod("baz")
+                                                      .andReturn(100);
                     expect(returnObj.hasOwnProperty("instance")).toBe(true);
                 });
             });
@@ -320,9 +322,9 @@ describe("MockBuilder", () => {
             it("should map the property on the stubbed object", () => {
                 var barVal: IBar = new Bar();
                 mockWithoutArguments.mapProperty("numberVal", 100)
-                    .mapProperty("booleanVal", true)
-                    .mapProperty("stringVal", "dummystr")
-                    .mapProperty("barVal", barVal);
+                                    .mapProperty("booleanVal", true)
+                                    .mapProperty("stringVal", "dummystr")
+                                    .mapProperty("barVal", barVal);
                 expect(mockWithoutArguments.instance.numberVal).toBe(100);
                 expect(mockWithoutArguments.instance.booleanVal).toBe(true);
                 expect(mockWithoutArguments.instance.stringVal).toBe("dummystr");
@@ -335,17 +337,17 @@ describe("MockBuilder", () => {
             describe("on andReturn() on the stubbedFunc method", () => {
                 it("should cast the function to a spy and map the passed return value on it", () => {
                     mockWithoutArguments.setupMethod("bar")
-                        .andReturn("dummyValue")
-                        .setupMethod("baz")
-                        .andReturn(100);
+                                        .andReturn("dummyValue")
+                                        .setupMethod("baz")
+                                        .andReturn(100);
                     expect(mockWithoutArguments.instance.bar()).toBe("dummyValue");
                     expect(mockWithoutArguments.instance.baz()).toBe(100);
                 });
                 it("should return the mock object", () => {
                     var returnObj: any = mockWithoutArguments.setupMethod("bar")
-                        .andReturn("dummyValue")
-                        .setupMethod("baz")
-                        .andReturn(100);
+                                                             .andReturn("dummyValue")
+                                                             .setupMethod("baz")
+                                                             .andReturn(100);
                     expect(returnObj.hasOwnProperty("instance")).toBe(true);
                 });
             });
@@ -358,5 +360,34 @@ describe("MockBuilder", () => {
                 });
             });
         });
+    });
+});
+
+describe("MockBuilder: original context sanity check", () => {
+    it("can create a mock", () => {
+        const bar1: Bar = new Bar();
+        expect(bar1.bar()).toBe("just a string");
+
+        const barMock: Mock<IBar> = MockBuilder
+            .createInstance(<IConstructor<IBar>>Bar);
+
+        expect(barMock.instance.bar()).toBe(undefined);
+
+        const bar2: Bar = new Bar();
+        expect(bar2.bar()).toBe("just a string");
+    });
+
+    it("can create a mock with a spied method", () => {
+        const bar1: Bar = new Bar();
+        expect(bar1.bar()).toBe("just a string");
+
+        const barMock: Mock<IBar> = MockBuilder
+            .createInstance(<IConstructor<IBar>>Bar)
+            .setupMethod("bar").andReturn("spied!");
+
+        expect(barMock.instance.bar()).toBe("spied!");
+
+        const bar2: Bar = new Bar();
+        expect(bar2.bar()).toBe("just a string");
     });
 });
