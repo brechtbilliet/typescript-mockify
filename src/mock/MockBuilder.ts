@@ -1,43 +1,59 @@
 import {Mock} from "./Mock";
 import * as _ from "lodash";
 import {ConstructorArguments} from "./ConstructorArguments";
-import {IConstructor} from "./IConstructor";
 
 export class MockBuilder {
-    public static createInstance<T>(ctor: IConstructor<T>, args?: ConstructorArguments): Mock<T> {
-        var instance: T = (() => {
-            var ConstructFunc: any = () => {
-            };
-            ConstructFunc.prototype = Object.create(ctor.prototype);
-            ConstructFunc.prototype.constructor = ConstructFunc;
+    public static createInstance<Interface, Impl extends Interface>(Ctor: Impl, args?: ConstructorArguments): Mock<Interface> {
+        const instance: Interface = MockBuilder.createMockInstance(Ctor, args);
 
-            for (var i in ConstructFunc.prototype) {
-                ConstructFunc.prototype[i] = jasmine.createSpy(ConstructFunc.prototype[i]);
-            }
-            var inst: any = new ConstructFunc();
-
-            if (args) {
-                ctor.apply(inst, _.toArray(args.arguments));
-            } else {
-                ctor.apply(inst, []);
-            }
-            MockBuilder.setDefaultVals(inst, args);
-            return inst;
-        })();
-        return new Mock<T>(instance, args);
+        return new Mock<Interface>(instance, args);
     }
 
-    private static setDefaultVals(object: Object, args?: ConstructorArguments): void {
-        for (var key in object) {
-            if (!_.isFunction() && typeof(object[key]) !== "function") {
-                if (args === undefined || (args !== undefined && !args.arguments.hasOwnProperty(key))) {
-                    var defaultVal: any = this.createDefaultValue(typeof(object[key]));
-                    if (defaultVal !== undefined) {
-                        object[key] = defaultVal;
-                    }
-                }
+    private static createMockInstance<Interface, Impl extends Interface>(Ctor: Impl, args: ConstructorArguments): Interface {
+        /**
+         * Create a mock implementation
+         */
+        class MockImplementation implements Interface {
+            constructor(mockImplementationArgs: Array) {
+                Ctor.apply(this, mockImplementationArgs);
             }
         }
+
+        /**
+         * copy the Impl's prototype to the MockImplementation's prototype
+         */
+        MockImplementation.prototype = Object.create(Ctor.prototype);
+
+        /**
+         * override all prototype methods by spies
+         */
+        for (let prototypeKey in MockImplementation.prototype) {
+            MockImplementation.prototype[prototypeKey] = jasmine.createSpy(prototypeKey);
+        }
+
+        /**
+         * create an instance of the Interface
+         */
+        var instance: Interface = new MockImplementation(args ? _.toArray(args.arguments) : null);
+
+        /**
+         * set default values
+         */
+        MockBuilder.setDefaultVals(instance, args);
+
+        return instance;
+    }
+
+    private static setDefaultVals(object: Object, args: ConstructorArguments): void {
+        _.each(object, (value: any, key: string) => {
+            if (!_.isFunction(value) && !MockBuilder.argsHasProperty(args, key)) {
+                object[key] = MockBuilder.createDefaultValue(typeof value);
+            }
+        });
+    }
+
+    private static argsHasProperty(args: ConstructorArguments, key: string): boolean {
+        return !!args && args.arguments.hasOwnProperty(key);
     }
 
     private static createDefaultValue(type: string): any {
