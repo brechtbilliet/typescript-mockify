@@ -3,8 +3,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var MockBuilder_1 = require("./MockBuilder");
 var ConstructorArguments_1 = require("./ConstructorArguments");
+var MockBuilder_1 = require("./MockBuilder");
 var Foo = (function () {
     function Foo(stringVal, booleanVal, barVal) {
         this.barVal = barVal;
@@ -318,5 +318,25 @@ describe("MockBuilder", function () {
                 });
             });
         });
+    });
+});
+describe("MockBuilder: original context sanity check", function () {
+    it("can create a mock", function () {
+        var bar1 = new Bar();
+        expect(bar1.bar()).toBe("just a string");
+        var barMock = MockBuilder_1.MockBuilder.createInstance(Bar);
+        expect(barMock.instance.bar()).toBe(undefined);
+        var bar2 = new Bar();
+        expect(bar2.bar()).toBe("just a string");
+    });
+    it("can create a mock with a spied method", function () {
+        var bar1 = new Bar();
+        expect(bar1.bar()).toBe("just a string");
+        var barMock = MockBuilder_1.MockBuilder
+            .createInstance(Bar)
+            .setupMethod("bar").andReturn("spied!");
+        expect(barMock.instance.bar()).toBe("spied!");
+        var bar2 = new Bar();
+        expect(bar2.bar()).toBe("just a string");
     });
 });

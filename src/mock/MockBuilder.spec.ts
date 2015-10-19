@@ -3,7 +3,6 @@ import {Mock} from "./Mock";
 import Spy = jasmine.Spy;
 import {ConstructorArguments} from "./ConstructorArguments";
 import {MockBuilder} from "./MockBuilder";
-import INoConstructor from "./";
 
 interface IFoo {
     stringVal: string;

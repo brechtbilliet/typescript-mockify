@@ -2,7 +2,6 @@ import Spy = jasmine.Spy;
 import {Mock} from "./Mock";
 export class StubbedFunc<T> {
     constructor(private func: Function, private mock: Mock<T>) {
-
     }
 
     public andReturn(value: any): Mock<T> {

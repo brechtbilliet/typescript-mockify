@@ -3,18 +3,18 @@ import * as _ from "lodash";
 import {ConstructorArguments} from "./ConstructorArguments";
 
 export class MockBuilder {
-    public static createInstance<Interface, Impl extends Interface>(Ctor: Impl, args?: ConstructorArguments): Mock<Interface> {
-        const instance: Interface = MockBuilder.createMockInstance(Ctor, args);
+    public static createInstance<Interface>(Ctor: any, args?: ConstructorArguments): Mock<Interface> {
+        const instance: Interface = MockBuilder.createMockInstance<Interface>(Ctor, args);
 
         return new Mock<Interface>(instance, args);
     }
 
-    private static createMockInstance<Interface, Impl extends Interface>(Ctor: Impl, args: ConstructorArguments): Interface {
+    private static createMockInstance<Interface>(Ctor: any, args: ConstructorArguments): Interface {
         /**
          * Create a mock implementation
          */
-        class MockImplementation implements Interface {
-            constructor(mockImplementationArgs: Array) {
+        class MockImplementation {
+            constructor(mockImplementationArgs: Array<any>) {
                 Ctor.apply(this, mockImplementationArgs);
             }
         }
@@ -34,7 +34,7 @@ export class MockBuilder {
         /**
          * create an instance of the Interface
          */
-        var instance: Interface = new MockImplementation(args ? _.toArray(args.arguments) : null);
+        var instance: Interface = <Interface> new MockImplementation(args ? _.toArray(args.arguments) : null);
 
         /**
          * set default values
