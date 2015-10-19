@@ -1,9 +1,7 @@
 // these are the testinterfaces and testclasses we will use to test our mock functionality
-import {MockBuilder} from "./MockBuilder";
 import {Mock} from "./Mock";
 import Spy = jasmine.Spy;
 import {ConstructorArguments} from "./ConstructorArguments";
-import {IConstructor} from "./IConstructor";
 import {MockBuilder} from "./MockBuilder";
 import INoConstructor from "./";
 
@@ -121,9 +119,9 @@ describe("MockBuilder", () => {
             .map("stringVal", "just a str")
             .map("booleanVal", true)
             .map("barVal", new Bar());
-        mock = MockBuilder.createInstance<IFoo>(<IConstructor<Foo>>Foo, constructorArguments);
-        inheritedMock = MockBuilder.createInstance<IFoo>(<IConstructor<Baz>>Baz, constructorArguments);
-        mockWithoutArguments = MockBuilder.createInstance<INoConstructor>(<IConstructor<NoConstructor>>NoConstructor);
+        mock = MockBuilder.createInstance<IFoo>(Foo, constructorArguments);
+        inheritedMock = MockBuilder.createInstance<IFoo>(Baz, constructorArguments);
+        mockWithoutArguments = MockBuilder.createInstance<INoConstructor>(NoConstructor);
     });
 
     describe("for normal objects", () => {
@@ -368,9 +366,7 @@ describe("MockBuilder: original context sanity check", () => {
         const bar1: Bar = new Bar();
         expect(bar1.bar()).toBe("just a string");
 
-        const barMock: Mock<IBar> = MockBuilder
-            .createInstance(<IConstructor<IBar>>Bar);
-
+        const barMock: Mock<IBar> = MockBuilder.createInstance<IBar>(Bar);
         expect(barMock.instance.bar()).toBe(undefined);
 
         const bar2: Bar = new Bar();
@@ -382,7 +378,7 @@ describe("MockBuilder: original context sanity check", () => {
         expect(bar1.bar()).toBe("just a string");
 
         const barMock: Mock<IBar> = MockBuilder
-            .createInstance(<IConstructor<IBar>>Bar)
+            .createInstance<IBar>(Bar)
             .setupMethod("bar").andReturn("spied!");
 
         expect(barMock.instance.bar()).toBe("spied!");
