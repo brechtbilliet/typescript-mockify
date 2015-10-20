@@ -7,6 +7,10 @@ var StubbedFunc = (function () {
         this.func.and.returnValue(value);
         return this.mock;
     };
+    StubbedFunc.prototype.andCallFake = function (fn) {
+        this.func.and.callFake(fn);
+        return this.mock;
+    };
     StubbedFunc.prototype.getSpy = function () {
         return this.func;
     };

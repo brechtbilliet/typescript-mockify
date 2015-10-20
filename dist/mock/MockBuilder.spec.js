@@ -21,6 +21,8 @@ var Foo = (function () {
     Foo.prototype.baz = function () {
         return 1000;
     };
+    Foo.prototype.quux = function (args) {
+    };
     return Foo;
 })();
 var Bar = (function () {
@@ -41,6 +43,8 @@ var BazParent = (function () {
     };
     BazParent.prototype.bar = function () {
         return "just a string";
+    };
+    BazParent.prototype.quux = function (args) {
     };
     return BazParent;
 })();
@@ -153,6 +157,21 @@ describe("MockBuilder", function () {
                         .setupMethod("baz")
                         .andReturn(100);
                     expect(returnObj.hasOwnProperty("instance")).toBe(true);
+                });
+            });
+            describe("on andCallFake() on the stubbedFunc method", function () {
+                it("should cast the function to a spy and call the passed value ", function () {
+                    var spyFunction = jasmine.createSpy("spiedFunction");
+                    mock.setupMethod("bar").andCallFake(spyFunction);
+                    mock.instance.bar();
+                    expect(spyFunction).toHaveBeenCalled();
+                });
+                it("should propagate all method arguments to the replacementFunction", function () {
+                    var spyFunction = jasmine.createSpy("spiedFunction");
+                    var args = ["i", "am", "an", "argument", "list"];
+                    mock.setupMethod("quux").andCallFake(spyFunction);
+                    mock.instance.quux(args);
+                    expect(spyFunction).toHaveBeenCalledWith(args);
                 });
             });
             describe("on getSpy()", function () {

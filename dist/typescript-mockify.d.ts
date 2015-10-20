@@ -13,6 +13,7 @@ declare module 'typescript-mockify/mock/StubbedFunc' {
 	    private mock;
 	    constructor(func: Function, mock: Mock<T>);
 	    andReturn(value: any): Mock<T>;
+	    andCallFake(fn: Function): Mock<T>;
 	    getSpy(): Spy;
 	}
 
@@ -29,21 +30,22 @@ declare module 'typescript-mockify/mock/Mock' {
 	}
 
 }
+declare module 'typescript-mockify/mock/MockBuilder' {
+	import { Mock } from 'typescript-mockify/mock/Mock';
+	import { ConstructorArguments } from 'typescript-mockify/mock/ConstructorArguments';
+	export class MockBuilder {
+	    static createInstance<Interface>(Ctor: any, args?: ConstructorArguments): Mock<Interface>;
+	    private static createMockInstance<Interface>(Ctor, args);
+	    private static setDefaultVals(object, args);
+	    private static argsHasProperty(args, key);
+	    private static createDefaultValue(type);
+	}
+
+}
 declare module 'typescript-mockify/mock/IConstructor' {
 	export interface IConstructor<T> {
 	    prototype: any;
 	    apply(inst: any, args: Array<any>): void;
-	}
-
-}
-declare module 'typescript-mockify/mock/MockBuilder' {
-	import { Mock } from 'typescript-mockify/mock/Mock';
-	import { ConstructorArguments } from 'typescript-mockify/mock/ConstructorArguments';
-	import { IConstructor } from 'typescript-mockify/mock/IConstructor';
-	export class MockBuilder {
-	    static createInstance<T>(ctor: IConstructor<T>, args?: ConstructorArguments): Mock<T>;
-	    private static setDefaultVals(object, args?);
-	    private static createDefaultValue(type);
 	}
 
 }
