@@ -115,6 +115,70 @@ class NoConstructor implements INoConstructor {
 
 }
 // actual tests
+describe("Mockbuilder: on creating a builder", () => {
+    describe("with instance constructor flag: false (default)", () => {
+        it("can create a mock without calling the instance constructor", () => {
+            const SpiedOnFoo: Spy<Foo> = jasmine.createSpy("Foo").and.callFake(Foo);
+
+            const mockFoo: Mock<IFoo> = new MockBuilder<IFoo>().createInstance(SpiedOnFoo);
+            expect(mockFoo.instance).toBeDefined();
+
+            expect(SpiedOnFoo).not.toHaveBeenCalled();
+
+            expect(mockFoo.instance.stringVal).toBeUndefined();
+            expect(mockFoo.instance.booleanVal).toBeUndefined();
+            expect(mockFoo.instance.numberVal).toBeUndefined();
+        });
+
+        it("does not set the properties from the constructorArgs", () => {
+            const mockFoo: Mock<IFoo> = new MockBuilder<IFoo>()
+                .createInstance(Foo, new ConstructorArguments()
+                    .map("stringVal", "str_val")
+                    .map("booleanVal", true)
+                    .map("numberVal", 169));
+
+            expect(mockFoo.instance).toBeDefined();
+            expect(mockFoo.instance.stringVal).toBeUndefined();
+            expect(mockFoo.instance.booleanVal).toBeUndefined();
+            expect(mockFoo.instance.numberVal).toBeUndefined();
+        });
+
+        it("can create a mock with overriden attributes", () => {
+            const mock: Mock<IFoo> = new MockBuilder<IFoo>()
+                .createInstance(Foo)
+                .mapProperty("stringVal", "str_val")
+                .mapProperty("booleanVal", true)
+                .mapProperty("numberVal", 169);
+
+            expect(mock.instance.stringVal).toBe("str_val");
+            expect(mock.instance.booleanVal).toBe(true);
+            expect(mock.instance.numberVal).toBe(169);
+        });
+    });
+
+    describe("with instance constructor flag: true", () => {
+        it("calls the instance constructor", () => {
+            const SpiesOnFoo: Spy<Foo> = jasmine.createSpy("Foo").and.callFake(Foo);
+
+            const mockFoo: Mock<IFoo> = new MockBuilder<IFoo>(true).createInstance(SpiesOnFoo);
+            expect(mockFoo.instance).toBeDefined();
+
+            expect(SpiesOnFoo).toHaveBeenCalled();
+        });
+
+        it("calls the instance constructor using the builder-notation", () => {
+            const SpiesOnFoo: Spy<Foo> = jasmine.createSpy("Foo").and.callFake(Foo);
+
+            const mockFoo: Mock<IFoo> = new MockBuilder<IFoo>()
+                .withCallConstructor(true)
+                .createInstance(SpiesOnFoo);
+            expect(mockFoo.instance).toBeDefined();
+
+            expect(SpiesOnFoo).toHaveBeenCalled();
+        });
+    });
+});
+
 describe("MockBuilder", () => {
     var mock: Mock<IFoo>;
     var inheritedMock: Mock<IFoo>;
@@ -125,9 +189,9 @@ describe("MockBuilder", () => {
             .map("stringVal", "just a str")
             .map("booleanVal", true)
             .map("barVal", new Bar());
-        mock = MockBuilder.createInstance<IFoo>(Foo, constructorArguments);
-        inheritedMock = MockBuilder.createInstance<IFoo>(Baz, constructorArguments);
-        mockWithoutArguments = MockBuilder.createInstance<INoConstructor>(NoConstructor);
+        mock = new MockBuilder<IFoo>(true).createInstance(Foo, constructorArguments);
+        inheritedMock = new MockBuilder<IFoo>(true).createInstance(Baz, constructorArguments);
+        mockWithoutArguments = new MockBuilder<INoConstructor>(true).createInstance(NoConstructor);
     });
 
     describe("for normal objects", () => {
@@ -389,7 +453,7 @@ describe("MockBuilder: original context sanity check", () => {
         const bar1: Bar = new Bar();
         expect(bar1.bar()).toBe("just a string");
 
-        const barMock: Mock<IBar> = MockBuilder.createInstance<IBar>(Bar);
+        const barMock: Mock<IBar> = new MockBuilder<IBar>().createInstance(Bar);
         expect(barMock.instance.bar()).toBe(undefined);
 
         const bar2: Bar = new Bar();
@@ -400,7 +464,7 @@ describe("MockBuilder: original context sanity check", () => {
         const bar1: Bar = new Bar();
         expect(bar1.bar()).toBe("just a string");
 
-        const barMock: Mock<IBar> = MockBuilder
+        const barMock: Mock<IBar> = new MockBuilder<IBar>()
             .createInstance<IBar>(Bar)
             .setupMethod("bar").andReturn("spied!");
 
