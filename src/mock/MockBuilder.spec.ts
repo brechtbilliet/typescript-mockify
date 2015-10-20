@@ -118,7 +118,7 @@ class NoConstructor implements INoConstructor {
 describe("Mockbuilder: on creating a builder", () => {
     describe("with instance constructor flag: false (default)", () => {
         it("can create a mock without calling the instance constructor", () => {
-            const SpiedOnFoo: Spy<Foo> = jasmine.createSpy("Foo").and.callFake(Foo);
+            const SpiedOnFoo: Spy = jasmine.createSpy("Foo").and.callFake(Foo);
 
             const mockFoo: Mock<IFoo> = new MockBuilder<IFoo>().createInstance(SpiedOnFoo);
             expect(mockFoo.instance).toBeDefined();
@@ -158,7 +158,7 @@ describe("Mockbuilder: on creating a builder", () => {
 
     describe("with instance constructor flag: true", () => {
         it("calls the instance constructor", () => {
-            const SpiesOnFoo: Spy<Foo> = jasmine.createSpy("Foo").and.callFake(Foo);
+            const SpiesOnFoo: Spy = jasmine.createSpy("Foo").and.callFake(Foo);
 
             const mockFoo: Mock<IFoo> = new MockBuilder<IFoo>(true).createInstance(SpiesOnFoo);
             expect(mockFoo.instance).toBeDefined();
@@ -167,7 +167,7 @@ describe("Mockbuilder: on creating a builder", () => {
         });
 
         it("calls the instance constructor using the builder-notation", () => {
-            const SpiesOnFoo: Spy<Foo> = jasmine.createSpy("Foo").and.callFake(Foo);
+            const SpiesOnFoo: Spy = jasmine.createSpy("Foo").and.callFake(Foo);
 
             const mockFoo: Mock<IFoo> = new MockBuilder<IFoo>()
                 .withCallConstructor(true)
@@ -465,7 +465,7 @@ describe("MockBuilder: original context sanity check", () => {
         expect(bar1.bar()).toBe("just a string");
 
         const barMock: Mock<IBar> = new MockBuilder<IBar>()
-            .createInstance<IBar>(Bar)
+            .createInstance(Bar)
             .setupMethod("bar").andReturn("spied!");
 
         expect(barMock.instance.bar()).toBe("spied!");

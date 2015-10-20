@@ -3,15 +3,15 @@ import * as _ from "lodash";
 import {ConstructorArguments} from "./ConstructorArguments";
 
 export class MockBuilder<Interface> {
-    constructor(private callConstructor: boolean = false) {}
+    constructor(private callConstructor?: boolean) {}
 
-    public withCallConstructor(callConstructor: boolean): MockBuilder {
+    public withCallConstructor(callConstructor: boolean): MockBuilder<Interface> {
         this.callConstructor = callConstructor;
         return this;
     }
 
     public createInstance(Ctor: any, args?: ConstructorArguments): Mock<Interface> {
-        const instance: Interface = this.createMockInstance<Interface>(Ctor, args);
+        const instance: Interface = this.createMockInstance(Ctor, args);
 
         return new Mock<Interface>(instance, args);
     }
