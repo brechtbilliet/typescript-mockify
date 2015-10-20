@@ -14,6 +14,7 @@ interface IFoo {
     foo(): void;
     bar(): string;
     baz(): number;
+    quux(args: Array<any>): void;
 }
 interface IBar {
     foo: string;
@@ -42,6 +43,9 @@ class Foo implements IFoo {
     public baz(): number {
         return 1000;
     }
+
+    public quux(args: Array<any>): void {
+    }
 }
 class Bar implements IBar {
     public foo: string;
@@ -65,6 +69,9 @@ class BazParent {
 
     public bar(): string {
         return "just a string";
+    }
+
+    public quux(args: Array<any>): void {
     }
 }
 class Baz extends BazParent implements IFoo {
@@ -190,6 +197,23 @@ describe("MockBuilder", () => {
                                              .setupMethod("baz")
                                              .andReturn(100);
                     expect(returnObj.hasOwnProperty("instance")).toBe(true);
+                });
+            });
+            describe("on andCallFake() on the stubbedFunc method", () => {
+                it("should cast the function to a spy and call the passed value ", () => {
+                    const spyFunction: Spy = jasmine.createSpy("spiedFunction");
+
+                    mock.setupMethod("bar").andCallFake(spyFunction);
+                    mock.instance.bar();
+                    expect(spyFunction).toHaveBeenCalled();
+                });
+                it("should propagate all method arguments to the replacementFunction", () => {
+                    const spyFunction: Spy = jasmine.createSpy("spiedFunction");
+                    const args: Array<String> = ["i", "am", "an", "argument", "list"];
+
+                    mock.setupMethod("quux").andCallFake(spyFunction);
+                    mock.instance.quux(args);
+                    expect(spyFunction).toHaveBeenCalledWith(args);
                 });
             });
             describe("on getSpy()", () => {
