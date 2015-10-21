@@ -3,13 +3,23 @@ var StubbedFunc = (function () {
         this.func = func;
         this.mock = mock;
     }
+    StubbedFunc.prototype.and = function (jasmineMethod) {
+        var _this = this;
+        return function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            (_a = _this.func.and)[jasmineMethod].apply(_a, args);
+            return _this.mock;
+            var _a;
+        };
+    };
     StubbedFunc.prototype.andReturn = function (value) {
-        this.func.and.returnValue(value);
-        return this.mock;
+        return this.and("returnValue")(value);
     };
     StubbedFunc.prototype.andCallFake = function (fn) {
-        this.func.and.callFake(fn);
-        return this.mock;
+        return this.and("callFake")(fn);
     };
     StubbedFunc.prototype.getSpy = function () {
         return this.func;
