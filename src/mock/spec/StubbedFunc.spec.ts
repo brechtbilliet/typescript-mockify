@@ -1,14 +1,10 @@
-import {StubbedFunc} from "./StubbedFunc";
-import {MockBuilder} from "./MockBuilder";
-import {Mock} from "./Mock";
+import * as _ from "lodash";
+import {StubbedFunc} from "../StubbedFunc";
+import {IFoo} from "./testClass/IFoo";
+import {Mock} from "../Mock";
+import {MockBuilder} from "../MockBuilder";
+import {Foo} from "./testClass/Foo";
 import Spy = jasmine.Spy;
-
-interface IFoo {
-    method(): void;
-}
-class Foo implements IFoo {
-    public method(): void {}
-}
 
 describe("StubbedFunc", () => {
     let underTest: StubbedFunc<IFoo>;
@@ -16,7 +12,7 @@ describe("StubbedFunc", () => {
 
     beforeEach(() => {
         fooMock = new MockBuilder<IFoo>().createInstance(Foo);
-        underTest = new StubbedFunc<IFoo>(fooMock.instance.method, fooMock);
+        underTest = new StubbedFunc<IFoo>(fooMock.instance.foo, fooMock);
     });
 
     describe("Constructing", () => {
@@ -32,7 +28,7 @@ describe("StubbedFunc", () => {
         it("sets up the spy", () => {
             _.times(10, () => {
                 const expectedResult: number = Math.random();
-                const result: any = underTest.andReturn(expectedResult).instance.method();
+                const result: any = underTest.andReturn(expectedResult).instance.foo();
                 expect(result).toBe(expectedResult);
             });
         });
@@ -41,7 +37,7 @@ describe("StubbedFunc", () => {
     describe("andCallFake()", () => {
         it("sets up the spy", () => {
             const spiedOnFunction: Spy = jasmine.createSpy("spy");
-            underTest.andCallFake(spiedOnFunction).instance.method();
+            underTest.andCallFake(spiedOnFunction).instance.foo();
             expect(spiedOnFunction).toHaveBeenCalled();
         });
     });

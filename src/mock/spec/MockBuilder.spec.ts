@@ -1,120 +1,15 @@
-// these are the testinterfaces and testclasses we will use to test our mock functionality
-import {Mock} from "./Mock";
 import Spy = jasmine.Spy;
-import {ConstructorArguments} from "./ConstructorArguments";
-import {MockBuilder} from "./MockBuilder";
+import {Foo} from "./testClass/Foo";
+import {Mock} from "../Mock";
+import {IFoo} from "./testClass/IFoo";
+import {MockBuilder} from "../MockBuilder";
+import {ConstructorArguments} from "../ConstructorArguments";
+import {INoConstructor} from "./testClass/INoConstructor";
+import {Bar} from "./testClass/Bar";
+import {Baz} from "./testClass/Baz";
+import {NoConstructor} from "./testClass/NoConstructor";
+import {IBar} from "./testClass/IBar";
 
-interface IFoo {
-    stringVal: string;
-    booleanVal: boolean;
-    numberVal: number;
-    objectVal: Object;
-    barVal: IBar;
-
-    foo(): void;
-    bar(): string;
-    baz(): number;
-    quux(args: Array<any>): void;
-}
-interface IBar {
-    foo: string;
-    bar(): string;
-}
-
-class Foo implements IFoo {
-    public stringVal: string;
-    public booleanVal: boolean;
-    public numberVal: number;
-    public objectVal: Object = {};
-
-    constructor(stringVal: string, booleanVal: boolean, public barVal: IBar) {
-        this.stringVal = stringVal;
-        this.booleanVal = booleanVal;
-        this.numberVal = 1000;
-    }
-
-    public foo(): void {
-    }
-
-    public bar(): string {
-        return "just a string";
-    }
-
-    public baz(): number {
-        return 1000;
-    }
-
-    public quux(args: Array<any>): void {
-    }
-}
-class Bar implements IBar {
-    public foo: string;
-
-    public bar(): string {
-        return "just a string";
-    }
-}
-
-class BazParent {
-    public numberVal: number;
-    public objectVal: Object = {};
-
-    constructor(public stringVal: string) {
-        this.numberVal = 1000;
-
-    }
-
-    public foo(): void {
-    }
-
-    public bar(): string {
-        return "just a string";
-    }
-
-    public quux(args: Array<any>): void {
-    }
-}
-class Baz extends BazParent implements IFoo {
-    public booleanVal: boolean;
-
-    constructor(stringVal: string, booleanVal: boolean, public barVal: IBar) {
-        super(stringVal);
-        this.booleanVal = booleanVal;
-    }
-
-    public baz(): number {
-        return 1000;
-    }
-}
-
-interface INoConstructor {
-    stringVal: string;
-    booleanVal: boolean;
-    numberVal: number;
-    objectVal: Object;
-    foo(): void;
-    bar(): string;
-    baz(): number;
-}
-class NoConstructor implements INoConstructor {
-    public stringVal: string = "dummystrval";
-    public booleanVal: boolean = true;
-    public numberVal: number = 0;
-    public objectVal: Object = {};
-
-    public foo(): void {
-    }
-
-    public bar(): string {
-        return "dummystr";
-    }
-
-    public baz(): number {
-        return 10;
-    }
-
-}
-// actual tests
 describe("Mockbuilder: on creating a builder", () => {
     describe("with instance constructor flag: false (default)", () => {
         it("can create a mock without calling the instance constructor", () => {

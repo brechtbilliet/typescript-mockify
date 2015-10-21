@@ -4,6 +4,10 @@ var Mock = (function () {
         this.instance = instance;
         this.args = args;
     }
+    Mock.prototype.setupSpy = function (func, spySetup) {
+        spySetup((this.instance[func]));
+        return this;
+    };
     Mock.prototype.setupMethod = function (func) {
         return new StubbedFunc_1.StubbedFunc(this.instance[func], this);
     };

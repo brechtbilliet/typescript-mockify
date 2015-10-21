@@ -1,86 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var ConstructorArguments_1 = require("./ConstructorArguments");
-var MockBuilder_1 = require("./MockBuilder");
-var Foo = (function () {
-    function Foo(stringVal, booleanVal, barVal) {
-        this.barVal = barVal;
-        this.objectVal = {};
-        this.stringVal = stringVal;
-        this.booleanVal = booleanVal;
-        this.numberVal = 1000;
-    }
-    Foo.prototype.foo = function () {
-    };
-    Foo.prototype.bar = function () {
-        return "just a string";
-    };
-    Foo.prototype.baz = function () {
-        return 1000;
-    };
-    Foo.prototype.quux = function (args) {
-    };
-    return Foo;
-})();
-var Bar = (function () {
-    function Bar() {
-    }
-    Bar.prototype.bar = function () {
-        return "just a string";
-    };
-    return Bar;
-})();
-var BazParent = (function () {
-    function BazParent(stringVal) {
-        this.stringVal = stringVal;
-        this.objectVal = {};
-        this.numberVal = 1000;
-    }
-    BazParent.prototype.foo = function () {
-    };
-    BazParent.prototype.bar = function () {
-        return "just a string";
-    };
-    BazParent.prototype.quux = function (args) {
-    };
-    return BazParent;
-})();
-var Baz = (function (_super) {
-    __extends(Baz, _super);
-    function Baz(stringVal, booleanVal, barVal) {
-        _super.call(this, stringVal);
-        this.barVal = barVal;
-        this.booleanVal = booleanVal;
-    }
-    Baz.prototype.baz = function () {
-        return 1000;
-    };
-    return Baz;
-})(BazParent);
-var NoConstructor = (function () {
-    function NoConstructor() {
-        this.stringVal = "dummystrval";
-        this.booleanVal = true;
-        this.numberVal = 0;
-        this.objectVal = {};
-    }
-    NoConstructor.prototype.foo = function () {
-    };
-    NoConstructor.prototype.bar = function () {
-        return "dummystr";
-    };
-    NoConstructor.prototype.baz = function () {
-        return 10;
-    };
-    return NoConstructor;
-})();
+var Foo_1 = require("./testClass/Foo");
+var MockBuilder_1 = require("../MockBuilder");
+var ConstructorArguments_1 = require("../ConstructorArguments");
+var Bar_1 = require("./testClass/Bar");
+var Baz_1 = require("./testClass/Baz");
+var NoConstructor_1 = require("./testClass/NoConstructor");
 describe("Mockbuilder: on creating a builder", function () {
     describe("with instance constructor flag: false (default)", function () {
         it("can create a mock without calling the instance constructor", function () {
-            var SpiedOnFoo = jasmine.createSpy("Foo").and.callFake(Foo);
+            var SpiedOnFoo = jasmine.createSpy("Foo").and.callFake(Foo_1.Foo);
             var mockFoo = new MockBuilder_1.MockBuilder().createInstance(SpiedOnFoo);
             expect(mockFoo.instance).toBeDefined();
             expect(SpiedOnFoo).not.toHaveBeenCalled();
@@ -90,7 +17,7 @@ describe("Mockbuilder: on creating a builder", function () {
         });
         it("does not set the properties from the constructorArgs", function () {
             var mockFoo = new MockBuilder_1.MockBuilder()
-                .createInstance(Foo, new ConstructorArguments_1.ConstructorArguments()
+                .createInstance(Foo_1.Foo, new ConstructorArguments_1.ConstructorArguments()
                 .map("stringVal", "str_val")
                 .map("booleanVal", true)
                 .map("numberVal", 169));
@@ -101,7 +28,7 @@ describe("Mockbuilder: on creating a builder", function () {
         });
         it("can create a mock with overriden attributes", function () {
             var mock = new MockBuilder_1.MockBuilder()
-                .createInstance(Foo)
+                .createInstance(Foo_1.Foo)
                 .mapProperty("stringVal", "str_val")
                 .mapProperty("booleanVal", true)
                 .mapProperty("numberVal", 169);
@@ -112,13 +39,13 @@ describe("Mockbuilder: on creating a builder", function () {
     });
     describe("with instance constructor flag: true", function () {
         it("calls the instance constructor", function () {
-            var SpiesOnFoo = jasmine.createSpy("Foo").and.callFake(Foo);
+            var SpiesOnFoo = jasmine.createSpy("Foo").and.callFake(Foo_1.Foo);
             var mockFoo = new MockBuilder_1.MockBuilder(true).createInstance(SpiesOnFoo);
             expect(mockFoo.instance).toBeDefined();
             expect(SpiesOnFoo).toHaveBeenCalled();
         });
         it("calls the instance constructor using the builder-notation", function () {
-            var SpiesOnFoo = jasmine.createSpy("Foo").and.callFake(Foo);
+            var SpiesOnFoo = jasmine.createSpy("Foo").and.callFake(Foo_1.Foo);
             var mockFoo = new MockBuilder_1.MockBuilder()
                 .withCallConstructor(true)
                 .createInstance(SpiesOnFoo);
@@ -136,10 +63,10 @@ describe("MockBuilder", function () {
         constructorArguments = new ConstructorArguments_1.ConstructorArguments()
             .map("stringVal", "just a str")
             .map("booleanVal", true)
-            .map("barVal", new Bar());
-        mock = new MockBuilder_1.MockBuilder(true).createInstance(Foo, constructorArguments);
-        inheritedMock = new MockBuilder_1.MockBuilder(true).createInstance(Baz, constructorArguments);
-        mockWithoutArguments = new MockBuilder_1.MockBuilder(true).createInstance(NoConstructor);
+            .map("barVal", new Bar_1.Bar());
+        mock = new MockBuilder_1.MockBuilder(true).createInstance(Foo_1.Foo, constructorArguments);
+        inheritedMock = new MockBuilder_1.MockBuilder(true).createInstance(Baz_1.Baz, constructorArguments);
+        mockWithoutArguments = new MockBuilder_1.MockBuilder(true).createInstance(NoConstructor_1.NoConstructor);
     });
     describe("for normal objects", function () {
         describe("on createIntance(), the mocked object", function () {
@@ -177,7 +104,7 @@ describe("MockBuilder", function () {
                 expect(returnVal.hasOwnProperty("instance")).toBe(true);
             });
             it("should map the property on the stubbed object", function () {
-                var barVal = new Bar();
+                var barVal = new Bar_1.Bar();
                 mock.mapProperty("numberVal", 100)
                     .mapProperty("booleanVal", true)
                     .mapProperty("stringVal", "dummystr")
@@ -270,7 +197,7 @@ describe("MockBuilder", function () {
                 expect(returnVal.hasOwnProperty("instance")).toBe(true);
             });
             it("should map the property on the stubbed object", function () {
-                var barVal = new Bar();
+                var barVal = new Bar_1.Bar();
                 inheritedMock.mapProperty("numberVal", 100)
                     .mapProperty("booleanVal", true)
                     .mapProperty("stringVal", "dummystr")
@@ -287,16 +214,10 @@ describe("MockBuilder", function () {
             });
             describe("on andReturn() on the stubbedFunc method", function () {
                 it("should cast the function to a spy and map the passed return value on it", function () {
-                    inheritedMock
-                        .setupMethod("bar").andReturn("dummyValue")
-                        .setupMethod("baz").andReturn(100);
-                    expect(inheritedMock.instance.bar()).toBe("dummyValue");
-                    expect(inheritedMock.instance.baz()).toBe(100);
-                });
-                it("should cast the function to a spy and map the passed return value on it2", function () {
-                    inheritedMock
-                        .setupSpy("bar", function (spy) { return spy.and.returnValue("dummyValue"); })
-                        .setupSpy("baz", function (spy) { return spy.and.returnValue(100); });
+                    inheritedMock.setupMethod("bar")
+                        .andReturn("dummyValue")
+                        .setupMethod("baz")
+                        .andReturn(100);
                     expect(inheritedMock.instance.bar()).toBe("dummyValue");
                     expect(inheritedMock.instance.baz()).toBe(100);
                 });
@@ -353,7 +274,7 @@ describe("MockBuilder", function () {
                 expect(returnVal.hasOwnProperty("instance")).toBe(true);
             });
             it("should map the property on the stubbed object", function () {
-                var barVal = new Bar();
+                var barVal = new Bar_1.Bar();
                 mockWithoutArguments.mapProperty("numberVal", 100)
                     .mapProperty("booleanVal", true)
                     .mapProperty("stringVal", "dummystr")
@@ -397,21 +318,21 @@ describe("MockBuilder", function () {
 });
 describe("MockBuilder: original context sanity check", function () {
     it("can create a mock", function () {
-        var bar1 = new Bar();
+        var bar1 = new Bar_1.Bar();
         expect(bar1.bar()).toBe("just a string");
-        var barMock = new MockBuilder_1.MockBuilder().createInstance(Bar);
+        var barMock = new MockBuilder_1.MockBuilder().createInstance(Bar_1.Bar);
         expect(barMock.instance.bar()).toBe(undefined);
-        var bar2 = new Bar();
+        var bar2 = new Bar_1.Bar();
         expect(bar2.bar()).toBe("just a string");
     });
     it("can create a mock with a spied method", function () {
-        var bar1 = new Bar();
+        var bar1 = new Bar_1.Bar();
         expect(bar1.bar()).toBe("just a string");
         var barMock = new MockBuilder_1.MockBuilder()
-            .createInstance(Bar)
+            .createInstance(Bar_1.Bar)
             .setupMethod("bar").andReturn("spied!");
         expect(barMock.instance.bar()).toBe("spied!");
-        var bar2 = new Bar();
+        var bar2 = new Bar_1.Bar();
         expect(bar2.bar()).toBe("just a string");
     });
 });
