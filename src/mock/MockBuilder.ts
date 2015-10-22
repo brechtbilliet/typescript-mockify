@@ -2,20 +2,31 @@ import {Mock} from "./Mock";
 import * as _ from "lodash";
 import {ConstructorArguments} from "./ConstructorArguments";
 
-export class MockBuilder {
-    public static createInstance<Interface>(Ctor: any, args?: ConstructorArguments): Mock<Interface> {
-        const instance: Interface = MockBuilder.createMockInstance<Interface>(Ctor, args);
+export class MockBuilder<Interface> {
+    constructor(private callConstructor?: boolean) {}
+
+    public withCallConstructor(callConstructor: boolean): MockBuilder<Interface> {
+        this.callConstructor = callConstructor;
+        return this;
+    }
+
+    public createInstance(Ctor: any, args?: ConstructorArguments): Mock<Interface> {
+        const instance: Interface = this.createMockInstance(Ctor, args);
 
         return new Mock<Interface>(instance, args);
     }
 
-    private static createMockInstance<Interface>(Ctor: any, args: ConstructorArguments): Interface {
+    private createMockInstance(Ctor: any, args: ConstructorArguments): Interface {
+        const callConstructor: boolean = this.callConstructor;
+
         /**
          * Create a mock implementation
          */
         class MockImplementation {
             constructor(mockImplementationArgs: Array<any>) {
-                Ctor.apply(this, mockImplementationArgs);
+                if (callConstructor) { // we cannot use "this" here, as it points to the MockImplementation class
+                    Ctor.apply(this, mockImplementationArgs);
+                }
             }
         }
 
@@ -23,6 +34,7 @@ export class MockBuilder {
          * copy the Impl's prototype to the MockImplementation's prototype
          */
         MockImplementation.prototype = Object.create(Ctor.prototype);
+        MockImplementation.prototype.constructor = MockImplementation;
 
         /**
          * override all prototype methods by spies

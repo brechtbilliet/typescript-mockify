@@ -77,6 +77,56 @@ var NoConstructor = (function () {
     };
     return NoConstructor;
 })();
+describe("Mockbuilder: on creating a builder", function () {
+    describe("with instance constructor flag: false (default)", function () {
+        it("can create a mock without calling the instance constructor", function () {
+            var SpiedOnFoo = jasmine.createSpy("Foo").and.callFake(Foo);
+            var mockFoo = new MockBuilder_1.MockBuilder().createInstance(SpiedOnFoo);
+            expect(mockFoo.instance).toBeDefined();
+            expect(SpiedOnFoo).not.toHaveBeenCalled();
+            expect(mockFoo.instance.stringVal).toBeUndefined();
+            expect(mockFoo.instance.booleanVal).toBeUndefined();
+            expect(mockFoo.instance.numberVal).toBeUndefined();
+        });
+        it("does not set the properties from the constructorArgs", function () {
+            var mockFoo = new MockBuilder_1.MockBuilder()
+                .createInstance(Foo, new ConstructorArguments_1.ConstructorArguments()
+                .map("stringVal", "str_val")
+                .map("booleanVal", true)
+                .map("numberVal", 169));
+            expect(mockFoo.instance).toBeDefined();
+            expect(mockFoo.instance.stringVal).toBeUndefined();
+            expect(mockFoo.instance.booleanVal).toBeUndefined();
+            expect(mockFoo.instance.numberVal).toBeUndefined();
+        });
+        it("can create a mock with overriden attributes", function () {
+            var mock = new MockBuilder_1.MockBuilder()
+                .createInstance(Foo)
+                .mapProperty("stringVal", "str_val")
+                .mapProperty("booleanVal", true)
+                .mapProperty("numberVal", 169);
+            expect(mock.instance.stringVal).toBe("str_val");
+            expect(mock.instance.booleanVal).toBe(true);
+            expect(mock.instance.numberVal).toBe(169);
+        });
+    });
+    describe("with instance constructor flag: true", function () {
+        it("calls the instance constructor", function () {
+            var SpiesOnFoo = jasmine.createSpy("Foo").and.callFake(Foo);
+            var mockFoo = new MockBuilder_1.MockBuilder(true).createInstance(SpiesOnFoo);
+            expect(mockFoo.instance).toBeDefined();
+            expect(SpiesOnFoo).toHaveBeenCalled();
+        });
+        it("calls the instance constructor using the builder-notation", function () {
+            var SpiesOnFoo = jasmine.createSpy("Foo").and.callFake(Foo);
+            var mockFoo = new MockBuilder_1.MockBuilder()
+                .withCallConstructor(true)
+                .createInstance(SpiesOnFoo);
+            expect(mockFoo.instance).toBeDefined();
+            expect(SpiesOnFoo).toHaveBeenCalled();
+        });
+    });
+});
 describe("MockBuilder", function () {
     var mock;
     var inheritedMock;
@@ -87,9 +137,9 @@ describe("MockBuilder", function () {
             .map("stringVal", "just a str")
             .map("booleanVal", true)
             .map("barVal", new Bar());
-        mock = MockBuilder_1.MockBuilder.createInstance(Foo, constructorArguments);
-        inheritedMock = MockBuilder_1.MockBuilder.createInstance(Baz, constructorArguments);
-        mockWithoutArguments = MockBuilder_1.MockBuilder.createInstance(NoConstructor);
+        mock = new MockBuilder_1.MockBuilder(true).createInstance(Foo, constructorArguments);
+        inheritedMock = new MockBuilder_1.MockBuilder(true).createInstance(Baz, constructorArguments);
+        mockWithoutArguments = new MockBuilder_1.MockBuilder(true).createInstance(NoConstructor);
     });
     describe("for normal objects", function () {
         describe("on createIntance(), the mocked object", function () {
@@ -343,7 +393,7 @@ describe("MockBuilder: original context sanity check", function () {
     it("can create a mock", function () {
         var bar1 = new Bar();
         expect(bar1.bar()).toBe("just a string");
-        var barMock = MockBuilder_1.MockBuilder.createInstance(Bar);
+        var barMock = new MockBuilder_1.MockBuilder().createInstance(Bar);
         expect(barMock.instance.bar()).toBe(undefined);
         var bar2 = new Bar();
         expect(bar2.bar()).toBe("just a string");
@@ -351,7 +401,7 @@ describe("MockBuilder: original context sanity check", function () {
     it("can create a mock with a spied method", function () {
         var bar1 = new Bar();
         expect(bar1.bar()).toBe("just a string");
-        var barMock = MockBuilder_1.MockBuilder
+        var barMock = new MockBuilder_1.MockBuilder()
             .createInstance(Bar)
             .setupMethod("bar").andReturn("spied!");
         expect(barMock.instance.bar()).toBe("spied!");

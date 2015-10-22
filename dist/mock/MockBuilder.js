@@ -1,20 +1,29 @@
 var Mock_1 = require("./Mock");
 var _ = require("lodash");
 var MockBuilder = (function () {
-    function MockBuilder() {
+    function MockBuilder(callConstructor) {
+        this.callConstructor = callConstructor;
     }
-    MockBuilder.createInstance = function (Ctor, args) {
-        var instance = MockBuilder.createMockInstance(Ctor, args);
+    MockBuilder.prototype.withCallConstructor = function (callConstructor) {
+        this.callConstructor = callConstructor;
+        return this;
+    };
+    MockBuilder.prototype.createInstance = function (Ctor, args) {
+        var instance = this.createMockInstance(Ctor, args);
         return new Mock_1.Mock(instance, args);
     };
-    MockBuilder.createMockInstance = function (Ctor, args) {
+    MockBuilder.prototype.createMockInstance = function (Ctor, args) {
+        var callConstructor = this.callConstructor;
         var MockImplementation = (function () {
             function MockImplementation(mockImplementationArgs) {
-                Ctor.apply(this, mockImplementationArgs);
+                if (callConstructor) {
+                    Ctor.apply(this, mockImplementationArgs);
+                }
             }
             return MockImplementation;
         })();
         MockImplementation.prototype = Object.create(Ctor.prototype);
+        MockImplementation.prototype.constructor = MockImplementation;
         for (var prototypeKey in MockImplementation.prototype) {
             MockImplementation.prototype[prototypeKey] = jasmine.createSpy(prototypeKey);
         }
