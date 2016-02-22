@@ -8,8 +8,7 @@
     "prebuild": "tsd install && rm -rf dist && mkdir dist",
     "build": "tsc",
     "postbuild": "npm run dts-bundle",
-    "prepublish": "npm run build",
-    "postinstall": "node tasks/create-typings-folder && cp dist/typescript-mockify.d.ts ../../typings/typescript-mockify.d.ts"
+    "prepublish": "npm run build"    
   },
   "typescript": {
     "definition": "dist/typescript-mockify.d.ts"
